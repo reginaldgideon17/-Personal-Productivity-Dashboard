@@ -1,0 +1,42 @@
+.files-content { padding: 28px 29px 35px; }
+.files-content .page-header { margin-bottom: 22px; }
+.files-content .page-header h1 { font-size: 26px; }
+.files-content .page-header-tools { gap: 10px; }
+.files-content .search-field { width: 240px; }
+.folders-panel { min-height: 295px; margin-bottom: 18px; }
+.folders-panel .section-card-heading { margin-bottom: 16px; }
+.folders-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.folder-card, .new-folder-card { display: flex; min-height: 126px; flex-direction: column; align-items: flex-start; padding: 20px 16px; border: 1px solid #dce2eb; border-radius: 12px; background: #fff; }
+.large-folder-icon { margin-bottom: 14px; color: #3d5de4; }
+.folder-card strong { color: #171b24; font-size: 13px; line-height: 1.3; }
+.folder-card small { margin-top: 5px; color: var(--muted); font-size: 11px; }
+.new-folder-card { align-items: center; justify-content: center; border: 2px dashed #c5cedc; color: var(--muted); }
+.new-folder-card > svg { color: #5e687b; }
+.new-folder-card strong { margin-top: 6px; font-size: 12px; font-weight: 600; }
+.recent-files-panel { min-height: 350px; }
+.recent-files-list { border-top: 1px solid #e8ecf2; }
+.file-row { display: flex; min-height: 68px; align-items: center; gap: 13px; border-bottom: 1px solid #e8ecf2; }
+.file-row:last-child { border-bottom: 0; }
+.file-type { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: var(--blue-light); color: #3d5de4; font-size: 9px; font-weight: 700; }
+.file-name { display: flex; flex: 1; flex-direction: column; gap: 4px; min-width: 0; }
+.file-name strong { overflow: hidden; color: #171b24; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.file-name small { color: var(--muted); font-size: 10px; }
+.file-detail { color: var(--muted); font-size: 10px; white-space: nowrap; }
+.files-empty { padding: 18px 0; color: var(--muted); font-size: 12px; }
+
+@media (max-width: 1000px) {
+  .folders-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .files-content { padding: 22px 14px 28px; }
+  .files-content .page-header-tools { width: 100%; }
+  .files-content .search-field { flex: 1; }
+  .file-row { flex-wrap: wrap; padding: 9px 0; }
+  .file-detail { margin-left: 51px; }
+  .file-row > .action-button { margin-left: auto; }
+}
+
+@media (max-width: 400px) {
+  .folders-grid { grid-template-columns: 1fr; }
+}
