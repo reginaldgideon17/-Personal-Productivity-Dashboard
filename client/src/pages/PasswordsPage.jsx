@@ -3,32 +3,17 @@ import ActionButton from '../components/ActionButton.jsx'
 import AppShell from '../components/AppShell.jsx'
 import Icon from '../components/Icon.jsx'
 import PageHeader from '../components/PageHeader.jsx'
+import useLocalStorageState from '../hooks/useLocalStorageState.js'
 import '../css/shared.css'
 import '../css/passwords.css'
 
-const categories = [
-  { name: 'All', label: 'All 24' },
-  { name: 'School', label: 'School 6' },
-  { name: 'Social', label: 'Social 8' },
-  { name: 'Money', label: 'Money 4' },
-  { name: 'Other', label: 'Other 6' },
-]
+const categoryNames = ['School', 'Social', 'Money', 'Other']
+const emptyDraft = { name: '', account: '', category: 'Other', password: '' }
 
-const passwords = [
-  { id: 1, letter: 'G', name: 'Gmail', account: 'reggie@example.com', category: 'Other', password: 'demo-gmail-pass' },
-  { id: 2, letter: 'G', name: 'GitHub', account: 'reggie-dev', category: 'Social', password: 'demo-github-pass' },
-  { id: 3, letter: 'S', name: 'School portal', account: 'student ID 0000000', category: 'School', password: 'demo-school-pass' },
-  { id: 4, letter: 'M', name: 'Mobile money', account: '0XX XXX XXXX', category: 'Money', password: 'demo-money-pass' },
-  { id: 5, letter: 'I', name: 'Instagram', account: 'reggie.codes', category: 'Social', password: 'demo-instagram-pass' },
-  { id: 6, letter: 'L', name: 'LinkedIn', account: 'reggie@example.com', category: 'Social', password: 'demo-linkedin-pass' },
-  { id: 7, letter: 'S', name: 'Student email', account: 'reggie@school.example', category: 'School', password: 'demo-student-pass' },
-  { id: 8, letter: 'N', name: 'Netflix', account: 'reggie@example.com', category: 'Other', password: 'demo-netflix-pass' },
-]
-
-function PasswordRow({ item, visible, onToggle }) {
+function PasswordRow({ item, visible, onToggle, onCopy, onEdit, onDelete }) {
   return (
     <div className="password-row">
-      <span className="password-letter">{item.letter}</span>
+      <span className="password-letter">{item.name.charAt(0).toUpperCase()}</span>
       <span className="password-account"><strong>{item.name}</strong><small>{item.account}</small></span>
       <span className="password-dots">{visible ? item.password : '••••••••••••'}</span>
       <div className="password-actions">
@@ -38,22 +23,89 @@ function PasswordRow({ item, visible, onToggle }) {
         >
           <Icon name={visible ? 'eyeOff' : 'eye'} size={15} />&nbsp;{visible ? 'Hide' : 'Reveal'}
         </ActionButton>
-        <ActionButton>Copy</ActionButton>
-        <ActionButton>Edit</ActionButton>
+        <ActionButton onClick={() => onCopy(item.password)}>Copy</ActionButton>
+        <ActionButton onClick={() => onEdit(item)}>Edit</ActionButton>
+        <ActionButton ariaLabel={`Delete ${item.name}`} onClick={() => onDelete(item.id)}>
+          <Icon name="trash" size={15} />
+        </ActionButton>
       </div>
     </div>
   )
 }
 
 export default function PasswordsPage() {
+  const [passwords, setPasswords, storageError] = useLocalStorageState('my-hub.passwords')
   const [category, setCategory] = useState('All')
   const [search, setSearch] = useState('')
   const [visiblePasswords, setVisiblePasswords] = useState({})
+  const [draft, setDraft] = useState(emptyDraft)
+  const [editingId, setEditingId] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [formError, setFormError] = useState('')
+  const [actionMessage, setActionMessage] = useState('')
+  const categories = [
+    { name: 'All', label: `All ${passwords.length}` },
+    ...categoryNames.map((name) => ({
+      name,
+      label: `${name} ${passwords.filter((item) => item.category === name).length}`,
+    })),
+  ]
   const visibleItems = passwords.filter((item) => {
     const matchesCategory = category === 'All' || item.category === category
     const matchesSearch = `${item.name} ${item.account}`.toLowerCase().includes(search.toLowerCase())
     return matchesCategory && matchesSearch
   })
+
+  function startNewLogin() {
+    setDraft(emptyDraft)
+    setEditingId(null)
+    setFormError('')
+    setActionMessage('')
+    setShowForm(true)
+  }
+
+  function startEditing(item) {
+    setDraft({ name: item.name, account: item.account, category: item.category, password: item.password })
+    setEditingId(item.id)
+    setFormError('')
+    setActionMessage('')
+    setShowForm(true)
+  }
+
+  function saveLogin(event) {
+    event.preventDefault()
+    const login = {
+      ...draft,
+      name: draft.name.trim(),
+      account: draft.account.trim(),
+      password: draft.password.trim(),
+    }
+
+    if (!login.name || !login.password) {
+      setFormError('Enter a name and password.')
+      return
+    }
+
+    if (editingId === null) {
+      setPasswords((currentPasswords) => [{ ...login, id: Date.now() }, ...currentPasswords])
+    } else {
+      setPasswords((currentPasswords) => currentPasswords.map((item) => (
+        item.id === editingId ? { ...item, ...login } : item
+      )))
+    }
+
+    setShowForm(false)
+    setFormError('')
+  }
+
+  function deleteLogin(id) {
+    setPasswords((currentPasswords) => currentPasswords.filter((item) => item.id !== id))
+    setVisiblePasswords((currentVisibility) => {
+      const nextVisibility = { ...currentVisibility }
+      delete nextVisibility[id]
+      return nextVisibility
+    })
+  }
 
   function togglePassword(id) {
     setVisiblePasswords((currentVisibility) => ({
@@ -62,22 +114,60 @@ export default function PasswordsPage() {
     }))
   }
 
+  async function copyPassword(password) {
+    try {
+      await navigator.clipboard.writeText(password)
+      setActionMessage('Password copied to clipboard.')
+    } catch {
+      setActionMessage('Could not access the clipboard. Check your browser permissions.')
+    }
+  }
+
   return (
     <AppShell activePage="Passwords">
       <div className="passwords-content">
         <PageHeader
           title="Passwords"
-          subtitle="24 saved logins"
+          subtitle={`${passwords.length} saved ${passwords.length === 1 ? 'login' : 'logins'}`}
           searchPlaceholder="Search logins"
           searchValue={search}
           onSearch={(event) => setSearch(event.currentTarget.value)}
-          action={<ActionButton variant="primary">Add login</ActionButton>}
+          action={<ActionButton onClick={startNewLogin} variant="primary">Add login</ActionButton>}
         />
 
         <div className="password-notice">
           <Icon name="shield" size={19} />
-          <span>Preview data only. Passwords shown here are sample values and are not stored or encrypted.</span>
+          <span>Logins are saved in this browser’s local storage and are not encrypted. Do not use this vault for sensitive passwords.</span>
         </div>
+        {(storageError || actionMessage) && <p className="password-message" role="status">{storageError || actionMessage}</p>}
+
+        {showForm && (
+          <form className="password-form" onSubmit={saveLogin}>
+            <label>
+              Name
+              <input autoComplete="off" onChange={(event) => setDraft({ ...draft, name: event.currentTarget.value })} required value={draft.name} />
+            </label>
+            <label>
+              Account
+              <input autoComplete="off" onChange={(event) => setDraft({ ...draft, account: event.currentTarget.value })} value={draft.account} />
+            </label>
+            <label>
+              Category
+              <select onChange={(event) => setDraft({ ...draft, category: event.currentTarget.value })} value={draft.category}>
+                {categoryNames.map((name) => <option key={name}>{name}</option>)}
+              </select>
+            </label>
+            <label>
+              Password
+              <input autoComplete="new-password" onChange={(event) => setDraft({ ...draft, password: event.currentTarget.value })} required type="password" value={draft.password} />
+            </label>
+            {formError && <p className="password-message" role="alert">{formError}</p>}
+            <div className="password-form-actions">
+              <ActionButton onClick={() => setShowForm(false)}>Cancel</ActionButton>
+              <ActionButton type="submit" variant="primary">{editingId === null ? 'Save login' : 'Update login'}</ActionButton>
+            </div>
+          </form>
+        )}
 
         <div className="password-categories">
           {categories.map((item) => (
@@ -98,11 +188,14 @@ export default function PasswordsPage() {
             <PasswordRow
               item={item}
               key={item.id}
+              onCopy={copyPassword}
+              onDelete={deleteLogin}
+              onEdit={startEditing}
               onToggle={togglePassword}
               visible={Boolean(visiblePasswords[item.id])}
             />
           ))}
-          {visibleItems.length === 0 && <p className="passwords-empty">No logins match your search.</p>}
+          {visibleItems.length === 0 && <p className="passwords-empty">{search ? 'No logins match your search.' : 'No saved logins yet. Add one to get started.'}</p>}
         </section>
       </div>
     </AppShell>

@@ -3,6 +3,14 @@
 .files-content .page-header h1 { font-size: 26px; }
 .files-content .page-header-tools { gap: 10px; }
 .files-content .search-field { width: 240px; }
+.file-upload-button { cursor: pointer; }
+.file-upload-button input { display: none; }
+.file-create-form { display: flex; gap: 8px; margin-bottom: 16px; }
+.file-create-form input, .file-folder-select select { min-height: 36px; padding: 0 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); font: inherit; font-size: 12px; }
+.file-create-form input { width: min(280px, 100%); }
+.file-folder-select { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; color: var(--muted); font-size: 12px; }
+.file-folder-select select { min-width: 150px; }
+.files-error { margin: 0 0 14px; color: #a33b37; font-size: 12px; }
 .folders-panel { min-height: 295px; margin-bottom: 18px; }
 .folders-panel .section-card-heading { margin-bottom: 16px; }
 .folders-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -23,6 +31,7 @@
 .file-name small { color: var(--muted); font-size: 10px; }
 .file-detail { color: var(--muted); font-size: 10px; white-space: nowrap; }
 .files-empty { padding: 18px 0; color: var(--muted); font-size: 12px; }
+.file-row > .action-button { text-decoration: none; }
 
 @media (max-width: 1000px) {
   .folders-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

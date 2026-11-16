@@ -1,11 +1,11 @@
 import Icon from './Icon.jsx'
 
 const navigation = [
-  { label: 'Overview', icon: 'home', href: '/' },
-  { label: 'Passwords', icon: 'lock', href: '/passwords.html' },
-  { label: 'Files', icon: 'folder', href: '/files.html' },
-  { label: 'To-do list', icon: 'checkSquare', href: '/todo.html' },
-  { label: 'Notes', icon: 'fileText', href: '/notes.html' },
+  { label: 'Overview', icon: 'home', href: './index.html' },
+  { label: 'Passwords', icon: 'lock', href: './passwords.html' },
+  { label: 'Files', icon: 'folder', href: './files.html' },
+  { label: 'To-do list', icon: 'checkSquare', href: './todo.html' },
+  { label: 'Notes', icon: 'fileText', href: './notes.html' },
 ]
 
 export default function AppShell({ activePage, children }) {
@@ -28,12 +28,8 @@ export default function AppShell({ activePage, children }) {
 
         <div className="hub-sidebar-bottom">
           <div className="storage-card">
-            <div><span>Storage</span><span>2.4 of 5 GB</span></div>
-            <div className="storage-track"><span /></div>
-          </div>
-          <div className="logout-item">
-            <span className="logout-icon"><Icon name="logout" size={18} /></span>
-            <span>Log out</span>
+            <strong>Local storage</strong>
+            <small>Your data stays in this browser.</small>
           </div>
         </div>
       </aside>

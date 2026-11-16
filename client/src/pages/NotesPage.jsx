@@ -3,17 +3,9 @@ import ActionButton from '../components/ActionButton.jsx'
 import AppShell from '../components/AppShell.jsx'
 import Icon from '../components/Icon.jsx'
 import PageHeader from '../components/PageHeader.jsx'
+import useLocalStorageState from '../hooks/useLocalStorageState.js'
 import '../css/shared.css'
 import '../css/notes.css'
-
-const initialNotes = [
-  { id: 1, title: 'Assignment ideas', date: 'Today', category: 'School', content: 'Outline the report first, then gather sources and draft the intro before Friday.\nCheck the marking scheme and keep to the word limit.\nAsk the lecturer about the referencing style.' },
-  { id: 2, title: 'Project to-build list', date: 'Yesterday', category: 'Personal', content: 'Login page, notes section, file upload, then the password vault last.' },
-  { id: 3, title: 'Exam revision plan', date: '12 Nov', category: 'School', content: 'One course per day, past questions in the evening, slides in the morning.' },
-  { id: 4, title: 'Report writing summary', date: '10 Nov', category: 'School', content: 'Plan, draft, edit. Keep paragraphs short and open each one with its main point.' },
-  { id: 5, title: 'Dashboard feature ideas', date: '8 Nov', category: 'Project', content: 'Email reminders, dark mode, search across everything, and a trash folder for deleted files.' },
-  { id: 6, title: 'Weekend plans', date: '7 Nov', category: 'Personal', content: 'Laundry, call family, cook for the week, one hour of coding practice.' },
-]
 
 function NoteCard({ note, selected, onSelect }) {
   return (
@@ -27,8 +19,8 @@ function NoteCard({ note, selected, onSelect }) {
 }
 
 export default function NotesPage() {
-  const [notes, setNotes] = useState(initialNotes)
-  const [selectedId, setSelectedId] = useState(initialNotes[0].id)
+  const [notes, setNotes, storageError] = useLocalStorageState('my-hub.notes')
+  const [selectedId, setSelectedId] = useState(null)
   const [search, setSearch] = useState('')
   const [saveMessage, setSaveMessage] = useState('')
   const selectedNote = notes.find((note) => note.id === selectedId)
@@ -42,8 +34,8 @@ export default function NotesPage() {
   }
 
   function createNote() {
-    const id = notes.reduce((largestId, note) => Math.max(largestId, note.id), 0) + 1
-    const newNote = { id, title: 'Untitled note', date: 'Today', category: 'Personal', content: '' }
+    const id = Date.now()
+    const newNote = { id, title: 'Untitled note', date: 'Just now', category: 'Personal', content: '' }
     setNotes((currentNotes) => [newNote, ...currentNotes])
     setSelectedId(id)
     setSearch('')
@@ -79,6 +71,7 @@ export default function NotesPage() {
           onSearch={(event) => setSearch(event.currentTarget.value)}
           action={<ActionButton onClick={createNote} variant="primary">New note</ActionButton>}
         />
+        {storageError && <p className="notes-empty" role="alert">{storageError}</p>}
         <div className="notes-layout">
           <div className="notes-list">
             {visibleNotes.map((note) => (

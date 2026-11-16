@@ -4,20 +4,11 @@ import AppShell from '../components/AppShell.jsx'
 import Icon from '../components/Icon.jsx'
 import PageHeader from '../components/PageHeader.jsx'
 import SectionCard from '../components/SectionCard.jsx'
+import useLocalStorageState from '../hooks/useLocalStorageState.js'
 import '../css/shared.css'
 import '../css/todo.css'
 
 const filters = ['All', 'Today', 'Upcoming', 'Done']
-
-const initialTasks = [
-  { id: 1, title: 'Review Data Structures slides', due: 'Today, 9:00 PM', category: 'School' },
-  { id: 2, title: 'Submit Business Communication assignment', due: 'Tomorrow', category: 'School' },
-  { id: 3, title: 'Renew phone data bundle', due: 'Wednesday', category: 'Personal' },
-  { id: 4, title: 'Push project code to GitHub', due: 'Friday', category: 'Project' },
-  { id: 5, title: 'Print Calculus II slides', due: 'Friday', category: 'School' },
-  { id: 6, title: 'Back up this week’s lecture slides', due: 'Completed', category: 'School', done: true },
-  { id: 7, title: 'Register for exam slot', due: 'Completed', category: 'School', done: true },
-]
 
 function TodoRow({ task, onToggle }) {
   return (
@@ -38,7 +29,7 @@ function TodoRow({ task, onToggle }) {
 }
 
 export default function TodoPage() {
-  const [tasks, setTasks] = useState(initialTasks)
+  const [tasks, setTasks, storageError] = useLocalStorageState('my-hub.tasks')
   const [filter, setFilter] = useState('All')
   const [search, setSearch] = useState('')
   const [draft, setDraft] = useState('')
@@ -91,6 +82,7 @@ export default function TodoPage() {
           onSearch={(event) => setSearch(event.currentTarget.value)}
           className="todo-page-header"
         />
+        {storageError && <p className="todo-error" role="alert">{storageError}</p>}
         <div className="todo-layout">
           <SectionCard className="todo-list-panel">
             <form className="todo-add-row" onSubmit={addTask}>
