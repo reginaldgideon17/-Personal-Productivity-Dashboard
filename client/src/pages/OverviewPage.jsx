@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import ActionButton from '../components/ActionButton.jsx'
 import AppShell from '../components/AppShell.jsx'
 import Icon from '../components/Icon.jsx'
@@ -10,15 +11,17 @@ import '../css/overview.css'
 
 function SummaryCard({ item }) {
   return (
-    <article className="summary-card">
+    <Link className="summary-card-link" to={item.href}>
+      <article className="summary-card">
       <span className="summary-icon"><Icon name={item.icon} size={19} /></span>
       <span><strong>{item.value}</strong><small>{item.label}</small></span>
-    </article>
+      </article>
+    </Link>
   )
 }
 
 export default function OverviewPage() {
-  const [tasks, , tasksError] = useLocalStorageState('my-hub.tasks')
+  const [tasks, ,tasksError] = useLocalStorageState('my-hub.tasks')
   const [notes, , notesError] = useLocalStorageState('my-hub.notes')
   const [folders, , foldersError] = useLocalStorageState('my-hub.folders')
   const [files, , filesError] = useLocalStorageState('my-hub.files')
@@ -31,10 +34,10 @@ export default function OverviewPage() {
   const visibleFolders = folders.filter((folder) => matching(folder.name)).slice(0, 6)
   const visibleLogins = passwords.filter((login) => matching(`${login.name} ${login.account}`)).slice(0, 4)
   const summary = [
-    { icon: 'checkSquare', value: openTasks.length, label: 'Open tasks' },
-    { icon: 'lock', value: passwords.length, label: 'Saved logins' },
-    { icon: 'folder', value: files.length, label: 'Files stored' },
-    { icon: 'fileText', value: notes.length, label: 'Notes' },
+    { icon: 'checkSquare', value: openTasks.length, label: 'Open tasks', href: '/todo' },
+    { icon: 'lock', value: passwords.length, label: 'Saved logins', href: '/passwords' },
+    { icon: 'folder', value: files.length, label: 'Files stored', href: '/files' },
+    { icon: 'fileText', value: notes.length, label: 'Notes', href: '/notes' },
   ]
   const [today] = useState(() => new Date().toLocaleDateString(undefined, {
     weekday: 'long',
@@ -62,29 +65,33 @@ export default function OverviewPage() {
         </div>
 
         <div className="overview-grid">
-          <SectionCard title="To-do list" action={<a className="link-label" href="./todo.html">View all</a>} className="overview-tasks">
+          <SectionCard title="To-do list" action={<Link className="link-label" to="/todo">View all</Link>} className="overview-tasks">
             <div className="overview-task-list">
               {visibleTasks.map((task) => (
-                <div className={`overview-task${task.done ? ' is-done' : ''}`} key={task.id}>
-                  <span className="task-check">{task.done && <Icon name="check" size={14} />}</span>
-                  <span><strong>{task.title}</strong><small>{task.done ? 'Completed' : task.due}</small></span>
-                </div>
+                <Link className="overview-item-link" key={task.id} to="/todo">
+                  <div className={`overview-task${task.done ? ' is-done' : ''}`}>
+                    <span className="task-check">{task.done && <Icon name="check" size={14} />}</span>
+                    <span><strong>{task.title}</strong><small>{task.done ? 'Completed' : task.due}</small></span>
+                  </div>
+                </Link>
               ))}
               {visibleTasks.length === 0 && <p className="overview-empty">{search ? 'No tasks match your search.' : 'No tasks yet.'}</p>}
             </div>
             <div className="add-task-row">
-              <a href="./todo.html">Add a task or reminder</a>
-              <ActionButton href="./todo.html" variant="primary">Add</ActionButton>
+              <Link to="/todo">Add a task or reminder</Link>
+              <ActionButton href="/todo" variant="primary">Add</ActionButton>
             </div>
           </SectionCard>
 
-          <SectionCard title="Notes" action={<ActionButton href="./notes.html">New note</ActionButton>} className="overview-notes">
+          <SectionCard title="Notes" action={<ActionButton href="/notes">New note</ActionButton>} className="overview-notes">
             <div className="overview-note-list">
               {visibleNotes.map((note) => (
-                <article className="overview-note" key={note.id}>
-                  <div><strong>{note.title}</strong><small>{note.date}</small></div>
-                  <p>{note.content}</p>
-                </article>
+                <Link className="overview-item-link" key={note.id} to="/notes">
+                  <article className="overview-note">
+                    <div><strong>{note.title}</strong><small>{note.date}</small></div>
+                    <p>{note.content}</p>
+                  </article>
+                </Link>
               ))}
               {visibleNotes.length === 0 && <p className="overview-empty">{search ? 'No notes match your search.' : 'No notes yet.'}</p>}
             </div>
@@ -92,31 +99,35 @@ export default function OverviewPage() {
 
           <SectionCard
             title="Folders"
-            action={<ActionButton href="./files.html">Manage files</ActionButton>}
+            action={<ActionButton href="/files">Manage files</ActionButton>}
             className="overview-folders"
           >
             <div className="overview-folder-grid">
               {visibleFolders.map((folder) => {
                 const count = files.filter((file) => file.folderId === folder.id).length
                 return (
-                  <article className="overview-folder" key={folder.id}>
-                    <Icon className="folder-icon" name="folder" size={20} />
-                    <strong>{folder.name}</strong>
-                    <small>{count} {count === 1 ? 'file' : 'files'}</small>
-                  </article>
+                  <Link className="overview-item-link" key={folder.id} to="/files">
+                    <article className="overview-folder">
+                      <Icon className="folder-icon" name="folder" size={20} />
+                      <strong>{folder.name}</strong>
+                      <small>{count} {count === 1 ? 'file' : 'files'}</small>
+                    </article>
+                  </Link>
                 )
               })}
               {visibleFolders.length === 0 && <p className="overview-empty">{search ? 'No folders match your search.' : 'No folders yet.'}</p>}
             </div>
           </SectionCard>
 
-          <SectionCard title="Password vault" action={<ActionButton href="./passwords.html" variant="primary">Add login</ActionButton>} className="overview-passwords">
+          <SectionCard title="Password vault" action={<ActionButton href="/passwords" variant="primary">Add login</ActionButton>} className="overview-passwords">
             <div className="overview-login-list">
               {visibleLogins.map((login) => (
-                <div className="overview-login" key={login.id}>
-                  <span className="login-letter">{login.name.charAt(0).toUpperCase()}</span>
-                  <span><strong>{login.name}</strong><small>••••••••••••</small></span>
-                </div>
+                <Link className="overview-item-link" key={login.id} to="/passwords">
+                  <div className="overview-login">
+                    <span className="login-letter">{login.name.charAt(0).toUpperCase()}</span>
+                    <span><strong>{login.name}</strong><small>••••••••••••</small></span>
+                  </div>
+                </Link>
               ))}
               {visibleLogins.length === 0 && <p className="overview-empty">{search ? 'No logins match your search.' : 'No saved logins yet.'}</p>}
             </div>

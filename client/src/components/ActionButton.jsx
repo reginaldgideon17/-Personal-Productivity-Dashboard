@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom"
 export default function ActionButton({ children, variant = 'outline', onClick, href, type = 'button', ariaLabel, pressed }) {
   const className = `action-button action-button-${variant}`
 
   if (href) {
-    return <a aria-label={ariaLabel} className={className} href={href}>{children}</a>
+    return <Link aria-label={ariaLabel} className={className} to={href}>{children}</Link>
   }
 
   if (onClick || type !== 'button') {

@@ -1,11 +1,12 @@
 import Icon from './Icon.jsx'
+import{Link} from 'react-router-dom'
 
 const navigation = [
-  { label: 'Overview', icon: 'home', href: './index.html' },
-  { label: 'Passwords', icon: 'lock', href: './passwords.html' },
-  { label: 'Files', icon: 'folder', href: './files.html' },
-  { label: 'To-do list', icon: 'checkSquare', href: './todo.html' },
-  { label: 'Notes', icon: 'fileText', href: './notes.html' },
+  { label: 'Overview', icon: 'home', href: '/' },
+  { label: 'Passwords', icon: 'lock', href: '/passwords' },
+  { label: 'Files', icon: 'folder', href: '/files' },
+  { label: 'To-do list', icon: 'checkSquare', href: '/todo' },
+  { label: 'Notes', icon: 'fileText', href: '/notes' },
 ]
 
 export default function AppShell({ activePage, children }) {
@@ -19,10 +20,10 @@ export default function AppShell({ activePage, children }) {
 
         <nav className="hub-nav" aria-label="Main navigation">
           {navigation.map((item) => (
-            <a className="hub-nav-item" data-active={activePage === item.label} href={item.href} key={item.label}>
+            <Link className="hub-nav-item" data-active={activePage === item.label} to={item.href} key={item.label}>
               <span className="hub-nav-icon"><Icon name={item.icon} size={19} /></span>
               <span>{item.label}</span>
-            </a>
+            </Link>
           ))}
         </nav>
 
