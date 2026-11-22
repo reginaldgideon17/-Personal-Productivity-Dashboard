@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Icon from '../components/Icon.jsx'
 import '../css/shared.css'
 import '../css/auth.css'
@@ -7,6 +7,7 @@ import '../css/auth.css'
 export default function AuthPage({ mode }) {
   const isSignup = mode === 'signup'
   const [message, setMessage] = useState('')
+  const navigate = useNavigate()
 
   function updatePasswordMatch(form) {
     const password = form.elements.namedItem('password')
@@ -24,7 +25,49 @@ export default function AuthPage({ mode }) {
       return
     }
 
-    setMessage(`${isSignup ? 'Account creation' : 'Account sign-in'} is not connected yet. Your information has not been saved.`)
+    const email = String(formData.get('email')).trim().toLowerCase()
+    const password = String(formData.get('password'))
+    const remember = formData.get('remember') === 'on'
+
+    if (isSignup) {
+      const account = {
+        name: String(formData.get('name')).trim(),
+        email,
+        password,
+      }
+      window.localStorage.setItem('my-hub.account', JSON.stringify(account))
+      const session = JSON.stringify({
+        name: account.name,
+        email: account.email,
+      })
+      window.localStorage.removeItem('my-hub.session')
+      window.sessionStorage.removeItem('my-hub.session')
+      window.localStorage.setItem('my-hub.session', session)
+      navigate('/')
+      return
+    }
+
+    let account = null
+    try {
+      account = JSON.parse(window.localStorage.getItem('my-hub.account') || 'null')
+    } catch {
+      account = null
+    }
+
+    if (!account || account.email !== email || account.password !== password) {
+      setMessage('No matching local account was found. Create an account first.')
+      return
+    }
+
+    const session = JSON.stringify({
+      name: account.name,
+      email: account.email,
+    })
+    window.localStorage.removeItem('my-hub.session')
+    window.sessionStorage.removeItem('my-hub.session')
+    const sessionStore = remember ? window.localStorage : window.sessionStorage
+    sessionStore.setItem('my-hub.session', session)
+    navigate('/')
   }
 
   return (

@@ -46,7 +46,6 @@ export default function OverviewPage() {
     year: 'numeric',
   }))
   const storageError = tasksError || notesError || foldersError || filesError || passwordsError
-
   return (
     <AppShell activePage="Overview">
       <div className="overview-content">

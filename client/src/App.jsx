@@ -5,7 +5,19 @@ import FilesPage from './pages/FilesPage.jsx'
 import TodoPage from './pages/TodoPage.jsx'
 import NotesPage from './pages/NotesPage.jsx'
 import AuthPage from './pages/AuthPage.jsx'
+import SettingsPage from './pages/SettingsPage.jsx'
+import { useEffect } from 'react'
 export default function App() {
+  useEffect(() => {
+    let theme = 'purple'
+    try {
+      theme = window.localStorage.getItem('my-hub.theme') || 'purple'
+    } catch {
+      theme = 'purple'
+    }
+    document.documentElement.dataset.theme = theme
+  }, [])
+
   return (
     <Routes>
       <Route path="/" element={<OverviewPage/>}/>
@@ -16,6 +28,7 @@ export default function App() {
       <Route path='/todo' element={<TodoPage/>}/>
       <Route path='/files' element={<FilesPage/>}/>
       <Route path='/notes' element={<NotesPage/>}/>
+      <Route path='/settings' element={<SettingsPage/>}/>
       <Route path='*' element={<Navigate to='/' replace/>}/>
 
 

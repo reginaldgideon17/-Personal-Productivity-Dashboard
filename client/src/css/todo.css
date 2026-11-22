@@ -19,7 +19,7 @@
 .todo-copy { display: flex; flex: 1; flex-direction: column; gap: 4px; min-width: 0; }
 .todo-copy strong { overflow: hidden; color: #171b24; font-size: 13px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
 .todo-copy small { color: var(--muted); font-size: 11px; }
-.todo-category { padding: 6px 11px; border-radius: 20px; background: #e8edff; color: #243eaf; font-size: 10px; font-weight: 600; }
+.todo-category { padding: 6px 11px; border-radius: 20px; background: var(--blue-light); color: var(--blue); font-size: 10px; font-weight: 600; }
 .category-personal { background: #f1ecff; color: #6747bd; }
 .category-project { background: #e7f5ef; color: #287c5b; }
 .todo-row.is-done .todo-checkbox { border-color: var(--blue); background: var(--blue); }

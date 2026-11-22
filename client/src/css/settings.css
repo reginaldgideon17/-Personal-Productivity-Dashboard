@@ -1,0 +1,31 @@
+.settings-content { padding: 28px 30px 35px; }
+.settings-content .page-header { margin-bottom: 22px; }
+.settings-section { max-width: 900px; padding: 22px; border: 1px solid var(--border); border-radius: 13px; background: #fff; }
+.settings-section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.settings-section-icon { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: 9px; background: var(--blue-light); color: var(--blue); }
+.settings-section-heading h2 { margin: 0; font-size: 16px; }
+.settings-section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+.theme-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.theme-card { position: relative; display: grid; gap: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: #fff; color: var(--ink); cursor: pointer; text-align: left; font: inherit; }
+.theme-card:hover { border-color: var(--blue); }
+.theme-card.is-selected { border: 2px solid var(--blue); padding: 9px; box-shadow: 0 0 0 3px var(--blue-light); }
+.theme-preview { display: grid; height: 120px; grid-template-columns: 28% 72%; overflow: hidden; border: 1px solid var(--border); border-radius: 8px; }
+.theme-preview > span:last-child { position: relative; display: grid; align-content: start; gap: 7px; padding: 15px 12px; }
+.theme-preview i { width: 58%; height: 12px; border-radius: 4px; }
+.theme-preview b { height: 7px; border-radius: 4px; background: rgba(255,255,255,.75); }
+.theme-preview b:last-child { width: 70%; }
+.theme-card-copy { display: grid; gap: 5px; padding: 0 2px 3px; }
+.theme-card-copy strong { font-size: 13px; }
+.theme-card-copy small { min-height: 30px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.theme-check { position: absolute; top: 15px; right: 15px; display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: var(--blue); color: #fff; }
+.settings-message { margin: 14px 0 0; color: var(--blue); font-size: 12px; }
+
+@media (max-width: 850px) {
+  .theme-grid { grid-template-columns: 1fr; }
+  .theme-preview { height: 105px; }
+}
+
+@media (max-width: 640px) {
+  .settings-content { padding: 22px 14px 28px; }
+  .settings-section { padding: 15px; }
+}

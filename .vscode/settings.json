@@ -1,0 +1,14 @@
+{
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": false
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.inlineSuggest.enabled": false,
+  "editor.parameterHints.enabled": true,
+  "editor.wordBasedSuggestions": "matchingDocuments",
+  "editor.tabCompletion": "on",
+  "github.copilot.editor.enableAutoCompletions": false,
+  "terminal.integrated.defaultProfile.windows": "Command Prompt"
+}
