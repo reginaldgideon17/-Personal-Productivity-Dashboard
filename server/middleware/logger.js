@@ -1,9 +1,11 @@
-function logger(req,res,next){
-    const start = Date.now()
+
+export function logger(req,res,next){
+    const start =  Date.now();
     res.on('finish',()=>{
-        const ms = Date.now - start
-        console.log(   `${req.method}${req.originalURL} ${req.statusCode} ${ms}ms`)
+        const ms = Date.now() - start;
+        console.log(`${req.method} ${req.originalUrl} ${res.statusCode} ${ms}ms This is from logger`)
     })
     next()
+
 }
-module.exports = logger
+export default logger

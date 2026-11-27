@@ -1,31 +1,28 @@
-// const dbTest = require('../model/note.model.js')
-import { fetchUsers } from '../model/note.model.js'
-import bcrypt from 'bcrypt'
+//Importing files needed
 
-export async function health(req, res) {
+import getServerTime from "../model/system.model.js";
+export function health(req, res) {
+    res.json({
+        success: true,
+        message: "Running server"
+    })
+}
+
+export async function dbTest(req, res) {
     try {
-        const { email, password } = req.body
-        console.log(`email: ${email}, password: ${password}`)
-        if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "Email and password are required"
-            })
-        }
+        const data = await getServerTime()
+         res.json({
+            success: true,
+            data
 
-        const dbTestResult = await dbTest()
-        console.log(dbTestResult)
-
-
-
+        })
     } catch (error) {
-        console.error(`There was an error in system.controller.js-health`)
-        console.error(error.name)
-        console.error(error.message)
+        console.log(error.message)
         res.status(500).json({
             success: false,
-            message: "Internal server error",
-            error: error.message
+            message: "Database connection failed"
         })
+
     }
 }
+

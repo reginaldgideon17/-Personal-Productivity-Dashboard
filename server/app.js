@@ -1,13 +1,19 @@
-const express = require('express')
-const cors = require('cors')
-const logger = require('./middleware/logger')
-const routes = require('./routes/index.js')
-
+import express from 'express'
+import cors from 'cors'
+import logger from './middleware/logger.js'
+import routes from './routes/index.js'
+import { errorHandler, notFound } from './middleware/errorHanderl.js'
 const app = express()
-
-app.use(express.json)
-app.use(cors)
+app.use(express.json())
 app.use(logger)
-app.use('/api',routes)
+app.use(cors())
 
-module.exports = app
+// app.get('/api/health', (req, res) => {
+//     return res.json(
+//         { ok: true }
+//     )
+// })
+app.use('/api', routes)
+app.use('/api',notFound)
+app.use(errorHandler)
+export default app

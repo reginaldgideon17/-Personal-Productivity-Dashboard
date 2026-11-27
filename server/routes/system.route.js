@@ -1,9 +1,11 @@
-const router = require('express').Router()
-const system = require('../controllers/system.controller')
+
+import { dbTest, health } from "../controllers/system.controller.js"
+import { Router } from "express"
 
 
-//Routes 
-router.get('/health',system.health)
-router.get('/db-test',system.dbTest)
+const router = Router()
+router.get('/health',health)
+router.get('/db-test',dbTest)
 
-module.exports = router
+
+export default router

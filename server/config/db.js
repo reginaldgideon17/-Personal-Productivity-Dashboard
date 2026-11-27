@@ -1,8 +1,12 @@
-import { Pool } from 'pg'
-import dotenv from 'dotenv'
-dotenv.config()
+import "dotenv/config.js"
+import pg from 'pg'
 
-export const  db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+const {Pool} = pg
+
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl:{
+        rejectUnauthorized: false
+    }
 })
+export default pool
